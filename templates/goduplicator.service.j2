@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=goduplicator
+After=network.target
+
+[Service]
+Type=simple
+User={{ goduplicator_system_user }}
+Group={{ goduplicator_system_group }}
+StartLimitBurst=5
+StartLimitInterval=0
+Restart=always
+ExecStart={{ goduplicator_bin_dir }}/goduplicator \
+	-l {{ goduplicator_listen }} \
+	-f {{ goduplicator_forward }} \
+	-m {% for mirror in goduplicator_mirror %}{{ mirror }}{% if not loop.last %},{% endif %}{% endfor %} \
+	-d {{ goduplicator_duration }} \
+	-t {{ goduplicator_mirror_connect_timeout }} \
+	-wt {{ goduplicator_mirror_write_timeout }} \
+	{% if goduplicator_use_zero_copy %}-z{% endif %}
+
+ExecStop=/bin/kill -s SIGTERM $MAINPID
+
+PrivateTmp=yes
+ProtectHome=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

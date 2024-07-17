@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  role_name: goduplicator
+  author: vandud
+  description: Role for installing goduplicator (reverse proxy for TCP mirroring)
+  license: BSD
+  min_ansible_version: "2.9"
+
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+  galaxy_tags:
+    - proxy
+    - mirror
+
+dependencies: []

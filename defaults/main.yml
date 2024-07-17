@@ -1,0 +1,21 @@
+---
+
+goduplicator_repo_url: https://github.com/mkevac/goduplicator
+# yamllint disable-line rule:line-length
+goduplicator_download_url: "{{ goduplicator_repo_url }}/releases/download/v{{ goduplicator_version }}/goduplicator_{{ goduplicator_version }}_Linux_x86_64.tar.gz"
+goduplicator_version: "0.2.2"
+
+goduplicator_system_user: goduplicator
+goduplicator_system_group: goduplicator
+
+goduplicator_bin_dir: /usr/local/bin
+
+goduplicator_duration: 20s
+goduplicator_forward: localhost:8081
+goduplicator_listen: localhost:8080
+goduplicator_mirror:
+  - localhost:8082
+  - localhost:8083
+goduplicator_mirror_connect_timeout: 500ms
+goduplicator_mirror_write_timeout: 20ms
+goduplicator_use_zero_copy: true

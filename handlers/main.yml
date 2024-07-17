@@ -1,0 +1,6 @@
+---
+- name: Restart goduplicator service
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: goduplicator
+    state: restarted

@@ -1,0 +1,47 @@
+---
+- name: Check if goduplicator is installed
+  ansible.builtin.stat:
+    path: "{{ goduplicator_bin_dir }}/goduplicator"
+  changed_when: false
+  check_mode: false
+  register: goduplicator_is_installed
+
+- name: Create goduplicator system group
+  ansible.builtin.group:
+    name: "{{ goduplicator_system_group }}"
+    state: present
+    system: true
+  when: goduplicator_system_group != "root"
+
+- name: Create goduplicator system user
+  ansible.builtin.user:
+    name: "{{ goduplicator_system_user }}"
+    groups: "{{ goduplicator_system_group }}"
+    append: true
+    shell: /sbin/nologin
+    system: true
+    createhome: false
+  when: goduplicator_system_user != "root"
+
+- name: Download goduplicator from {{ goduplicator_download_url }}
+  ansible.builtin.unarchive:
+    src: "{{ goduplicator_download_url }}"
+    dest: "{{ goduplicator_bin_dir }}"
+    extra_opts:
+      - goduplicator
+    owner: "{{ goduplicator_system_user }}"
+    group: "{{ goduplicator_system_group }}"
+    remote_src: true
+  notify: Restart goduplicator service
+  when:
+    - not ansible_check_mode
+    - goduplicator_is_installed.stat.exists == False
+
+- name: Create systemd unit file for goduplicator
+  ansible.builtin.template:
+    src: goduplicator.service.j2
+    dest: /etc/systemd/system/goduplicator.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart goduplicator service
